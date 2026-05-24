@@ -1,0 +1,1172 @@
+{
+  "name": "To Collect data of customers[out of hours]",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dac",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -400,
+        -16
+      ],
+      "id": "882479b6-c2b7-4312-9f58-ed3da416df9c",
+      "name": "Webhook",
+      "webhookId": "dac32378-b629-44cc-8bfb-fe9b4da5c3ed"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"success\",\n  \"message\": \"Inquiry successfully logged.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        480,
+        -16
+      ],
+      "id": "65c7e544-7fc3-4eac-beb8-ef14c38342ef",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/13AAcYz5QaMTxW4eyzIr5ob068jCtMsvax_oosv3AwRs/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13AAcYz5QaMTxW4eyzIr5ob068jCtMsvax_oosv3AwRs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.formattedDate }}",
+            "Name": "={{ $('Webhook').item.json.body.args.caller_name }}",
+            "Enquiry": "={{ $('Webhook').item.json.body.args.issue }}",
+            "Callback Number": "={{ $('Webhook').item.json.body.args.callback_number }}",
+            "Time": "={{ $json.formattedTime }}",
+            "Company": "={{ $('Webhook').item.json.body.args.company_name }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Enquiry",
+              "displayName": "Enquiry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Callback Number",
+              "displayName": "Callback Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        256,
+        -16
+      ],
+      "id": "c4e04366-0d9a-4f4c-9b95-7c5a98498dd0",
+      "name": "To Collect data of customers[out of hours]",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "luFwQMyeiaOPf3tw",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "outputFieldName": "=currentDate",
+        "options": {
+          "timezone": "Europe/London"
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -176,
+        -16
+      ],
+      "id": "6431a903-6fc6-4f30-a2af-ed7a08b664de",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Get the date string from the Date & Time node's output.\n// Assuming your Date & Time node is named \"Date & Time\"\nconst dateNodeOutput = $node[\"Date & Time\"].json;\nconst now_string = dateNodeOutput.currentDate;\nconst now = new Date(now_string);\n\n// 2. Define the corrected working hours (in 24-hour time, decimal format)\n// Manchester/UK Time\nconst WORKING_HOURS = {\n  // Mon - Thurs (1-4)\n  weekdayStart: 7.5,      // 7:30 AM\n  weekdayEnd: 16.25,      // 4:15 PM (4 + 15/60)\n  // Friday (5)\n  fridayStart: 7.5,       // 7:30 AM\n  fridayEnd: 13.5         // 1:30 PM (13 + 30/60)\n};\n\nconst dayOfWeek = now.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday\nconst currentHour = now.getHours() + now.getMinutes() / 60; // Current time as decimal\n\nlet call_status = \"after_hours\";\n\n// 3. Logic to determine status\nif (dayOfWeek === 0 || dayOfWeek === 6) {\n  call_status = \"after_hours\";\n}\nelse if (dayOfWeek >= 1 && dayOfWeek <= 4) {\n  if (currentHour >= WORKING_HOURS.weekdayStart && currentHour <= WORKING_HOURS.weekdayEnd) {\n    call_status = \"during_hours\";\n  }\n}\nelse if (dayOfWeek === 5) {\n  if (currentHour >= WORKING_HOURS.fridayStart && currentHour <= WORKING_HOURS.fridayEnd) {\n    call_status = \"during_hours\";\n  }\n}\n\n// 4. Format Date and Time for Google Sheets\n// 'en-GB' locale for the UK format (DD/MM/YYYY)\nconst formattedDate = now.toLocaleDateString('en-GB'); \n\n// *** MODIFIED FOR 12-HOUR FORMAT ***\nconst formattedTime = now.toLocaleTimeString('en-GB', { \n    hour: '2-digit', \n    minute: '2-digit',\n    hour12: true // Key property for 12-hour format (will include AM/PM)\n});\n\n// 5. Output for the next node (Google Sheets)\nreturn [{\n  json: {\n    // Pass the calculated status (if needed later)\n    call_status: call_status, \n    \n    // Pass the formatted Date and Time for the Google Sheet node to use\n    formattedDate: formattedDate,\n    formattedTime: formattedTime\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        -16
+      ],
+      "id": "20d73cf4-b36e-40ea-8788-a043a0b8cc73",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "bluebird-humane-platypus.ngrok-free.app",
+            "user-agent": "axios/1.11.0",
+            "content-length": "9461",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "100.20.5.228",
+            "x-forwarded-host": "bluebird-humane-platypus.ngrok-free.app",
+            "x-forwarded-proto": "https",
+            "x-retell-signature": "v=1761924781049,d=bf6f7ba87242ec8f0215f0672595eaa9d6f465c6e8392d7ba631d5707f2438fd"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "call": {
+              "call_id": "playground",
+              "call_type": "web_call",
+              "agent_id": "agent_93cbd84d329d7ac6f4edc6d3cc",
+              "agent_version": 0,
+              "agent_name": "AI Receptionist[Framos Fabrication]",
+              "retell_llm_dynamic_variables": {
+                "call_id": "playground",
+                "session_type": "voice",
+                "call_type": "web_call"
+              },
+              "call_status": "ongoing",
+              "transcript": "Agent: Hello, thank you for calling Framos Fabrications. Our office is currently closed. Could you please share your name, your issue or inquiry, and a callback number so our team can contact you during working hours?\nUser: i am kenny calling from autoverge ai and just wanted to know about the pricing of the company\nAgent: Thank you, Kenny. Could you please provide a callback number so our team can reach you during working hours?\nUser: yeah you can call me on 7307179064\n",
+              "transcript_object": [
+                {
+                  "messageId": "message_bb75edfe3be96c90dcecd196",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Hello, thank you for calling Framos Fabrications. Our office is currently closed. Could you please share your name, your issue or inquiry, and a callback number so our team can contact you during working hours?",
+                  "createdTimestamp": 1761924778955,
+                  "words": [
+                    {
+                      "word": "Hello, ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "thank ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "you ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "for ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "calling ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "Framos ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "Fabrications. ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "Our ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "office ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "is ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "currently ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "closed. ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "Could ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "you ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "please ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "share ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "your ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "name, ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "your ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "issue ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "or ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "inquiry, ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "and ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "a ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "callback ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "number ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "so ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "our ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "team ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "can ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "contact ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "you ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "during ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "working ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "hours?",
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_98da8997de77ce4b2a09bec8",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "i am kenny calling from autoverge ai and just wanted to know about the pricing of the company",
+                  "createdTimestamp": 1761924778956,
+                  "words": [
+                    {
+                      "word": "i ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "am ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "kenny ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "calling ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "from ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "autoverge ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "ai ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "and ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "just ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "wanted ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "to ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "know ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "about ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "the ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "pricing ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "of ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "the ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "company",
+                      "start": 3,
+                      "end": 3
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_b4c68fde09fe6cedb8186294",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Thank you, Kenny. Could you please provide a callback number so our team can reach you during working hours?",
+                  "createdTimestamp": 1761924778957,
+                  "words": [
+                    {
+                      "word": "Thank ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "you, ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Kenny. ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Could ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "you ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "please ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "provide ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "a ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "callback ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "number ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "so ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "our ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "team ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "can ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "reach ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "you ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "during ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "working ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "hours?",
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_e8dfe52efbc6f0a78f7923b3",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "yeah you can call me on 7307179064",
+                  "createdTimestamp": 1761924778958,
+                  "words": [
+                    {
+                      "word": "yeah ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "you ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "can ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "call ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "me ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "on ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "7307179064",
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                }
+              ],
+              "transcript_with_tool_calls": [
+                {
+                  "role": "tool_call_invocation",
+                  "tool_call_id": "628ba88bbac5f11a",
+                  "name": "call_status",
+                  "arguments": "{}",
+                  "time_sec": 0
+                },
+                {
+                  "role": "tool_call_result",
+                  "tool_call_id": "628ba88bbac5f11a",
+                  "content": "{\"call_status\":\"after_hours\"}",
+                  "time_sec": 1
+                },
+                {
+                  "messageId": "message_bb75edfe3be96c90dcecd196",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Hello, thank you for calling Framos Fabrications. Our office is currently closed. Could you please share your name, your issue or inquiry, and a callback number so our team can contact you during working hours?",
+                  "createdTimestamp": 1761924778955,
+                  "words": [
+                    {
+                      "word": "Hello, ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "thank ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "you ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "for ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "calling ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "Framos ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "Fabrications. ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "Our ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "office ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "is ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "currently ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "closed. ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "Could ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "you ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "please ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "share ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "your ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "name, ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "your ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "issue ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "or ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "inquiry, ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "and ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "a ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "callback ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "number ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "so ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "our ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "team ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "can ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "contact ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "you ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "during ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "working ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "hours?",
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_98da8997de77ce4b2a09bec8",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "i am kenny calling from autoverge ai and just wanted to know about the pricing of the company",
+                  "createdTimestamp": 1761924778956,
+                  "words": [
+                    {
+                      "word": "i ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "am ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "kenny ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "calling ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "from ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "autoverge ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "ai ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "and ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "just ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "wanted ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "to ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "know ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "about ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "the ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "pricing ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "of ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "the ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "company",
+                      "start": 3,
+                      "end": 3
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_b4c68fde09fe6cedb8186294",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Thank you, Kenny. Could you please provide a callback number so our team can reach you during working hours?",
+                  "createdTimestamp": 1761924778957,
+                  "words": [
+                    {
+                      "word": "Thank ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "you, ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Kenny. ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Could ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "you ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "please ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "provide ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "a ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "callback ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "number ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "so ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "our ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "team ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "can ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "reach ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "you ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "during ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "working ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "hours?",
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_e8dfe52efbc6f0a78f7923b3",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "yeah you can call me on 7307179064",
+                  "createdTimestamp": 1761924778958,
+                  "words": [
+                    {
+                      "word": "yeah ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "you ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "can ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "call ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "me ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "on ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "7307179064",
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                },
+                {
+                  "role": "tool_call_invocation",
+                  "tool_call_id": "226746b4fb9dde3b",
+                  "name": "store_after_hours_inquiry",
+                  "arguments": "{\"caller_name\":\"Kenny\",\"callback_number\":\"7307179064\",\"issue\":\"Wants to know about the pricing of the company\",\"company_name\":\"Autoverge AI\"}",
+                  "time_sec": 6
+                }
+              ],
+              "latency": {},
+              "call_cost": {
+                "product_costs": [],
+                "combined_cost": 0,
+                "total_duration_seconds": 0,
+                "total_duration_unit_price": 0
+              },
+              "opt_out_sensitive_data_storage": false,
+              "data_storage_setting": "everything",
+              "opt_in_signed_url": false,
+              "tool_mocks": [],
+              "access_token": ""
+            },
+            "name": "store_after_hours_inquiry",
+            "args": {
+              "caller_name": "Kenny",
+              "callback_number": "7307179064",
+              "issue": "Wants to know about the pricing of the company",
+              "company_name": "Autoverge AI"
+            }
+          },
+          "webhookUrl": "https://bluebird-humane-platypus.ngrok-free.app/webhook/dac",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "To Collect data of customers[out of hours]": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "To Collect data of customers[out of hours]",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "44414607-28ed-45ab-b576-ef973cffc2c5",
+  "meta": {
+    "instanceId": "3eef55ec08c90e8ddd4411f18519cd3ad85d8e6f7f57fd1fb7779898bc5aab19"
+  },
+  "id": "CIleeVqerheHUvNM",
+  "tags": []
+}

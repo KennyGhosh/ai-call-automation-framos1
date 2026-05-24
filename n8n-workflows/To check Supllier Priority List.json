@@ -1,0 +1,669 @@
+{
+  "name": "To check Supllier Priority List",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "36fd42ba-7508-4563-8760-9a51f62adc77",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1904,
+        -192
+      ],
+      "id": "8ad78e4a-4d15-44d1-b02c-f52cb1df97cb",
+      "name": "Webhook",
+      "webhookId": "36fd42ba-7508-4563-8760-9a51f62adc77"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -1008,
+        -192
+      ],
+      "id": "81a6b999-6d55-41a9-92ef-f59cab50a181",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "https://docs.google.com/spreadsheets/d/1QHyr437hB7M-q1gO1C59EeRiRG1Kiu6IDvu0T0NKXHY/edit?gid=0#gid=0",
+          "__regex": "https:\\/\\/(?:drive|docs)\\.google\\.com(?:\\/.*|)\\/d\\/([0-9a-zA-Z\\-_]+)(?:\\/.*|)"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QHyr437hB7M-q1gO1C59EeRiRG1Kiu6IDvu0T0NKXHY/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Company",
+              "lookupValue": "="
+            },
+            {
+              "lookupColumn": "Phone No.",
+              "lookupValue": "={{ $json.body.args.phone_number }}"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1680,
+        -192
+      ],
+      "id": "4a0dba4f-cce0-4342-8f6a-10833cd99e72",
+      "name": "To check Supllier Priority List",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "luFwQMyeiaOPf3tw",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ae5c66eb-2c1e-4cbc-800d-770092e60eb6",
+              "name": "priority_status",
+              "value": "non_priority_supplier",
+              "type": "string"
+            },
+            {
+              "id": "0aac5499-575d-4d76-bb03-d9d3c07e28a3",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1232,
+        -96
+      ],
+      "id": "d7efd063-4a96-4a72-8d52-46f59745ac31",
+      "name": "Not Found"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fb58925f-55a4-4f8d-87a0-84a36b5c3525",
+              "name": "priority_status",
+              "value": "priority_supplier",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1232,
+        -288
+      ],
+      "id": "14e9cd70-efc5-4029-8295-20c6910c205d",
+      "name": "If Found"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f1e663c2-5659-4045-9ad6-b8b32cd32ecb",
+              "leftValue": "={{ $json.row_number }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "66e780b4-f182-4b71-825d-e3f44c2ef4ed",
+              "leftValue": "={{ $json[\"$length\"] }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1456,
+        -192
+      ],
+      "id": "ea0c67e4-9e46-412c-abe2-27ae6a3287c6",
+      "name": "Check if Found"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "bluebird-humane-platypus.ngrok-free.app",
+            "user-agent": "axios/1.11.0",
+            "content-length": "4827",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "100.20.5.228",
+            "x-forwarded-host": "bluebird-humane-platypus.ngrok-free.app",
+            "x-forwarded-proto": "https",
+            "x-retell-signature": "v=1763668682537,d=54f64e4f5cd1753dea5f67e7ac93c9c516b42088328b4d0c35067bf43e894b0e"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "call": {
+              "call_id": "playground",
+              "call_type": "web_call",
+              "agent_id": "agent_93cbd84d329d7ac6f4edc6d3cc",
+              "agent_version": 2,
+              "agent_name": "AI Receptionist[Framos Fabrication]",
+              "retell_llm_dynamic_variables": {
+                "call_id": "playground",
+                "session_type": "voice",
+                "call_type": "web_call"
+              },
+              "call_status": "ongoing",
+              "transcript": "Agent: One moment while I check the supplier's priority status for you.\nUser: hey my number is 7307179066\nAgent: One moment while I check the supplier's priority status for you.\n",
+              "transcript_object": [
+                {
+                  "messageId": "message_b30c642ed4e671970ba046e8",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "One moment while I check the supplier's priority status for you.",
+                  "createdTimestamp": 1763668680829,
+                  "words": [
+                    {
+                      "word": "One ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "moment ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "while ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "I ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "check ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "the ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "supplier's ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "priority ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "status ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "for ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "you.",
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_199e7ae021b533a4604ad66d",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "hey my number is 7307179066",
+                  "createdTimestamp": 1763668680832,
+                  "words": [
+                    {
+                      "word": "hey ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "my ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "number ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "is ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "7307179066",
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                },
+                {
+                  "chatId": "playground",
+                  "messageId": "message_13cc65ddb3264dc1715e5497",
+                  "role": "agent",
+                  "content": "One moment while I check the supplier's priority status for you.",
+                  "model": "gpt-5-mini",
+                  "createdTimestamp": 1763668682536,
+                  "words": [
+                    {
+                      "word": "One ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "moment ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "while ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "I ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "check ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "the ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "supplier's ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "priority ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "status ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "for ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "you.",
+                      "start": 6,
+                      "end": 6
+                    }
+                  ]
+                }
+              ],
+              "transcript_with_tool_calls": [
+                {
+                  "role": "tool_call_invocation",
+                  "tool_call_id": "0b8211ce09909601",
+                  "name": "call_status",
+                  "arguments": "{}",
+                  "time_sec": 0
+                },
+                {
+                  "role": "tool_call_result",
+                  "tool_call_id": "0b8211ce09909601",
+                  "content": "{\"call_status\":\"during_hours\"}",
+                  "time_sec": 1
+                },
+                {
+                  "messageId": "message_b30c642ed4e671970ba046e8",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "One moment while I check the supplier's priority status for you.",
+                  "createdTimestamp": 1763668680829,
+                  "words": [
+                    {
+                      "word": "One ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "moment ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "while ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "I ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "check ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "the ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "supplier's ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "priority ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "status ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "for ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "you.",
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "role": "tool_call_invocation",
+                  "tool_call_id": "309b56f8a6fa0c9e",
+                  "name": "check_supplier_priority_status",
+                  "arguments": "{\"phone_number\":\"<caller_phone_number>\",\"execution_message\":\"One moment while I check the supplier's priority status for you.\"}",
+                  "time_sec": 3
+                },
+                {
+                  "role": "tool_call_result",
+                  "tool_call_id": "309b56f8a6fa0c9e",
+                  "content": "",
+                  "time_sec": 4
+                },
+                {
+                  "messageId": "message_199e7ae021b533a4604ad66d",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "hey my number is 7307179066",
+                  "createdTimestamp": 1763668680832,
+                  "words": [
+                    {
+                      "word": "hey ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "my ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "number ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "is ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "7307179066",
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                },
+                {
+                  "chatId": "playground",
+                  "messageId": "message_13cc65ddb3264dc1715e5497",
+                  "role": "agent",
+                  "content": "One moment while I check the supplier's priority status for you.",
+                  "model": "gpt-5-mini",
+                  "createdTimestamp": 1763668682536,
+                  "words": [
+                    {
+                      "word": "One ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "moment ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "while ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "I ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "check ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "the ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "supplier's ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "priority ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "status ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "for ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "you.",
+                      "start": 6,
+                      "end": 6
+                    }
+                  ]
+                },
+                {
+                  "role": "tool_call_invocation",
+                  "tool_call_id": "85f1e7924f1d2d1b",
+                  "name": "check_supplier_priority_status",
+                  "arguments": "{\"phone_number\":\"7307179066\",\"execution_message\":\"One moment while I check the supplier's priority status for you.\"}",
+                  "time_sec": 7
+                }
+              ],
+              "latency": {},
+              "call_cost": {
+                "product_costs": [],
+                "combined_cost": 0,
+                "total_duration_seconds": 0,
+                "total_duration_unit_price": 0
+              },
+              "data_storage_setting": "everything",
+              "opt_in_signed_url": false,
+              "tool_mocks": [],
+              "access_token": ""
+            },
+            "name": "check_supplier_priority_status",
+            "args": {
+              "phone_number": "7307179066"
+            }
+          },
+          "webhookUrl": "https://bluebird-humane-platypus.ngrok-free.app/webhook/36fd42ba-7508-4563-8760-9a51f62adc77",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "To check Supllier Priority List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "To check Supllier Priority List": {
+      "main": [
+        [
+          {
+            "node": "Check if Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Found": {
+      "main": [
+        [
+          {
+            "node": "If Found",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Not Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Found": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Not Found": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0c6dcc61-1997-4841-b71d-03aa01cf5289",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3eef55ec08c90e8ddd4411f18519cd3ad85d8e6f7f57fd1fb7779898bc5aab19"
+  },
+  "id": "qcUGVzMYoEoUgG06",
+  "tags": []
+}

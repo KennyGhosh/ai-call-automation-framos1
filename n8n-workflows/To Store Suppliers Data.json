@@ -1,0 +1,1440 @@
+{
+  "name": "To Store Suppliers Data",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "be",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "51ca6bb6-eb8b-4136-a820-2a3942b3ca88",
+      "name": "Webhook",
+      "webhookId": "be86beea-caac-43e0-a5da-6fe30269687c"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1DVCyfSJ7Tot6UfPSszQI3MDqF9qmHs9WrKeWhrul8sw/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DVCyfSJ7Tot6UfPSszQI3MDqF9qmHs9WrKeWhrul8sw/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Callback Number": "={{ $json.body.args.callback_number }}",
+            "Name": "={{ $json.body.args.contact_person_name }}",
+            "Enquiry": "={{ $json.body.args.inquiry_details }}",
+            "Company": "={{ $json.body.args.company_name }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Enquiry",
+              "displayName": "Enquiry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Callback Number",
+              "displayName": "Callback Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "0ceceac9-985f-4295-94f9-cfbdcfdfb4a5",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "luFwQMyeiaOPf3tw",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "3ecd57ae-2033-4cf3-b656-68f5e2ace28f",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "bluebird-humane-platypus.ngrok-free.app",
+            "user-agent": "axios/1.15.2",
+            "content-length": "13520",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "baggage": "sentry-environment=production,sentry-public_key=f9776ac2f798b66bdadc990a2ed64f17,sentry-trace_id=e6fb5e9633384554bbe13321ab52015d,sentry-org_id=4511141371183104",
+            "content-type": "application/json",
+            "sentry-trace": "e6fb5e9633384554bbe13321ab52015d-aabcc2f1e63e1434",
+            "x-forwarded-for": "100.20.5.228",
+            "x-forwarded-host": "bluebird-humane-platypus.ngrok-free.app",
+            "x-forwarded-proto": "https",
+            "x-retell-signature": "v=1779560701152,d=e716705848cb50431ca13a070e220f8ee49fc8b4c1b24aec55801eb46564586e"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "call": {
+              "call_id": "playground",
+              "call_type": "web_call",
+              "agent_id": "agent_93cbd84d329d7ac6f4edc6d3cc",
+              "agent_version": 3,
+              "agent_name": "AI Receptionist[Framos Fabrication]",
+              "retell_llm_dynamic_variables": {
+                "call_id": "playground",
+                "session_type": "voice",
+                "call_type": "web_call",
+                "system_timezone": "America/Los_Angeles"
+              },
+              "call_status": "ongoing",
+              "transcript": "Agent: Thanks for sharing. I'll need to take down a few details so our team can get back to you. Ah—could I have your name, please?\nUser: yeah i m kenny\nAgent: Gotcha, Kenny — thanks! Which company are you calling from?\nUser: kenny estates\nAgent: Thanks — Kenny Estates noted. Could you tell me the nature of your inquiry or what you're looking to supply/request?\nUser: price related\nAgent: Gotcha — price related. Could I get a callback number, please?\nUser: yeah call me on 9999944444\nAgent: Could you please repeat your full number?\nUser: 9999944444\nAgent: Thanks for Sharing your Details our team will reach out to you\n",
+              "transcript_object": [
+                {
+                  "messageId": "message_6ba1860a52a89a881a4c83b2",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Thanks for sharing. I'll need to take down a few details so our team can get back to you. Ah—could I have your name, please?",
+                  "createdTimestamp": 1779560644569,
+                  "words": [
+                    {
+                      "word": "Thanks ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "for ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "sharing. ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "I'll ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "need ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "to ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "take ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "down ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "a ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "few ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "details ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "so ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "our ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "team ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "can ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "get ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "back ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "to ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "you. ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "Ah—could ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "I ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "have ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "your ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "name, ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "please?",
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_a3dea8add86f26eedec949b5",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "yeah i m kenny",
+                  "createdTimestamp": 1779560644570,
+                  "words": [
+                    {
+                      "word": "yeah ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "i ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "m ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "kenny",
+                      "start": 3,
+                      "end": 3
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_31c7c3f15602a01478ff0d97",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Gotcha, Kenny — thanks! Which company are you calling from?",
+                  "createdTimestamp": 1779560655378,
+                  "words": [
+                    {
+                      "word": "Gotcha, ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Kenny ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "— ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "thanks! ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Which ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "company ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "are ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "you ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "calling ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "from?",
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_21874a43d9a2c4a1fa13ec41",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "kenny estates",
+                  "createdTimestamp": 1779560655379,
+                  "words": [
+                    {
+                      "word": "kenny ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "estates",
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_109f011b546f1288f9feac14",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Thanks — Kenny Estates noted. Could you tell me the nature of your inquiry or what you're looking to supply/request?",
+                  "createdTimestamp": 1779560665311,
+                  "words": [
+                    {
+                      "word": "Thanks ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "— ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "Kenny ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "Estates ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "noted. ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "Could ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "you ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "tell ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "me ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "the ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "nature ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "of ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "your ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "inquiry ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "or ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "what ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "you're ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "looking ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "to ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "supply/request?",
+                      "start": 6,
+                      "end": 6
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_f11b3c6d41c546735d962625",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "price related",
+                  "createdTimestamp": 1779560665312,
+                  "words": [
+                    {
+                      "word": "price ",
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "word": "related",
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_ea8d194e950908e484419f05",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Gotcha — price related. Could I get a callback number, please?",
+                  "createdTimestamp": 1779560674616,
+                  "words": [
+                    {
+                      "word": "Gotcha ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "— ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "price ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "related. ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "Could ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "I ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "get ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "a ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "callback ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "number, ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "please?",
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_4d01a41adf85e1de47a1cbbc",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "yeah call me on 9999944444",
+                  "createdTimestamp": 1779560674617,
+                  "words": [
+                    {
+                      "word": "yeah ",
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "word": "call ",
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "word": "me ",
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "word": "on ",
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "word": "9999944444",
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_a30c62e330135a6ca4205da7",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Could you please repeat your full number?",
+                  "createdTimestamp": 1779560689639,
+                  "words": [
+                    {
+                      "word": "Could ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "you ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "please ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "repeat ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "your ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "full ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "number?",
+                      "start": 10,
+                      "end": 10
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_aac6c45c7ccc98a79426d410",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "9999944444",
+                  "createdTimestamp": 1779560689640,
+                  "words": [
+                    {
+                      "word": "9999944444",
+                      "start": 11,
+                      "end": 11
+                    }
+                  ]
+                },
+                {
+                  "chatId": "playground",
+                  "messageId": "message_826184ed085ae514fdb3c0d3",
+                  "role": "agent",
+                  "content": "Thanks for Sharing your Details our team will reach out to you",
+                  "model": "gpt-5-mini",
+                  "metadata": {
+                    "response_id": 1
+                  },
+                  "createdTimestamp": 1779560701152,
+                  "words": [
+                    {
+                      "word": "Thanks ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "for ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "Sharing ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "your ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "Details ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "our ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "team ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "will ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "reach ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "out ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "to ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "you",
+                      "start": 12,
+                      "end": 12
+                    }
+                  ]
+                }
+              ],
+              "transcript_with_tool_calls": [
+                {
+                  "role": "tool_call_invocation",
+                  "tool_call_id": "a04d1c5ade2c5999",
+                  "name": "call_status",
+                  "arguments": "{}",
+                  "time_sec": 0,
+                  "type": "custom"
+                },
+                {
+                  "role": "tool_call_result",
+                  "tool_call_id": "a04d1c5ade2c5999",
+                  "content": "{\"call_status\":\"during_hours\"}",
+                  "time_sec": 1
+                },
+                {
+                  "messageId": "message_6ba1860a52a89a881a4c83b2",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Thanks for sharing. I'll need to take down a few details so our team can get back to you. Ah—could I have your name, please?",
+                  "createdTimestamp": 1779560644569,
+                  "words": [
+                    {
+                      "word": "Thanks ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "for ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "sharing. ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "I'll ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "need ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "to ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "take ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "down ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "a ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "few ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "details ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "so ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "our ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "team ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "can ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "get ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "back ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "to ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "you. ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "Ah—could ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "I ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "have ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "your ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "name, ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "please?",
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_a3dea8add86f26eedec949b5",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "yeah i m kenny",
+                  "createdTimestamp": 1779560644570,
+                  "words": [
+                    {
+                      "word": "yeah ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "i ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "m ",
+                      "start": 3,
+                      "end": 3
+                    },
+                    {
+                      "word": "kenny",
+                      "start": 3,
+                      "end": 3
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_31c7c3f15602a01478ff0d97",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Gotcha, Kenny — thanks! Which company are you calling from?",
+                  "createdTimestamp": 1779560655378,
+                  "words": [
+                    {
+                      "word": "Gotcha, ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Kenny ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "— ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "thanks! ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Which ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "company ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "are ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "you ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "calling ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "from?",
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_21874a43d9a2c4a1fa13ec41",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "kenny estates",
+                  "createdTimestamp": 1779560655379,
+                  "words": [
+                    {
+                      "word": "kenny ",
+                      "start": 5,
+                      "end": 5
+                    },
+                    {
+                      "word": "estates",
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_109f011b546f1288f9feac14",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Thanks — Kenny Estates noted. Could you tell me the nature of your inquiry or what you're looking to supply/request?",
+                  "createdTimestamp": 1779560665311,
+                  "words": [
+                    {
+                      "word": "Thanks ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "— ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "Kenny ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "Estates ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "noted. ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "Could ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "you ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "tell ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "me ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "the ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "nature ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "of ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "your ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "inquiry ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "or ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "what ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "you're ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "looking ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "to ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "supply/request?",
+                      "start": 6,
+                      "end": 6
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_f11b3c6d41c546735d962625",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "price related",
+                  "createdTimestamp": 1779560665312,
+                  "words": [
+                    {
+                      "word": "price ",
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "word": "related",
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_ea8d194e950908e484419f05",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Gotcha — price related. Could I get a callback number, please?",
+                  "createdTimestamp": 1779560674616,
+                  "words": [
+                    {
+                      "word": "Gotcha ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "— ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "price ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "related. ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "Could ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "I ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "get ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "a ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "callback ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "number, ",
+                      "start": 8,
+                      "end": 8
+                    },
+                    {
+                      "word": "please?",
+                      "start": 8,
+                      "end": 8
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_4d01a41adf85e1de47a1cbbc",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "yeah call me on 9999944444",
+                  "createdTimestamp": 1779560674617,
+                  "words": [
+                    {
+                      "word": "yeah ",
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "word": "call ",
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "word": "me ",
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "word": "on ",
+                      "start": 9,
+                      "end": 9
+                    },
+                    {
+                      "word": "9999944444",
+                      "start": 9,
+                      "end": 9
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_a30c62e330135a6ca4205da7",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Could you please repeat your full number?",
+                  "createdTimestamp": 1779560689639,
+                  "words": [
+                    {
+                      "word": "Could ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "you ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "please ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "repeat ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "your ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "full ",
+                      "start": 10,
+                      "end": 10
+                    },
+                    {
+                      "word": "number?",
+                      "start": 10,
+                      "end": 10
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_aac6c45c7ccc98a79426d410",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "9999944444",
+                  "createdTimestamp": 1779560689640,
+                  "words": [
+                    {
+                      "word": "9999944444",
+                      "start": 11,
+                      "end": 11
+                    }
+                  ]
+                },
+                {
+                  "chatId": "playground",
+                  "messageId": "message_826184ed085ae514fdb3c0d3",
+                  "role": "agent",
+                  "content": "Thanks for Sharing your Details our team will reach out to you",
+                  "model": "gpt-5-mini",
+                  "metadata": {
+                    "response_id": 1
+                  },
+                  "createdTimestamp": 1779560701152,
+                  "words": [
+                    {
+                      "word": "Thanks ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "for ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "Sharing ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "your ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "Details ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "our ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "team ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "will ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "reach ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "out ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "to ",
+                      "start": 12,
+                      "end": 12
+                    },
+                    {
+                      "word": "you",
+                      "start": 12,
+                      "end": 12
+                    }
+                  ]
+                },
+                {
+                  "role": "tool_call_invocation",
+                  "tool_call_id": "1b1545da54c4d944",
+                  "name": "store_supplier_details_to_sheet",
+                  "arguments": "{\"callback_number\":\"9999944444\",\"contact_person_name\":\"Kenny\",\"inquiry_details\":\"price related\",\"company_name\":\"Kenny Estates\",\"execution_message\":\"Thanks for Sharing your Details our team will reach out to you\"}",
+                  "time_sec": 13,
+                  "type": "custom"
+                }
+              ],
+              "latency": {},
+              "metadata": {},
+              "call_cost": {
+                "product_costs": [],
+                "combined_cost": 0,
+                "total_duration_seconds": 0,
+                "total_duration_unit_price": 0
+              },
+              "data_storage_setting": "everything",
+              "opt_in_signed_url": false,
+              "tool_mocks": [],
+              "access_token": ""
+            },
+            "name": "store_supplier_details_to_sheet",
+            "args": {
+              "callback_number": "9999944444",
+              "contact_person_name": "Kenny",
+              "inquiry_details": "price related",
+              "company_name": "Kenny Estates"
+            }
+          },
+          "webhookUrl": "https://bluebird-humane-platypus.ngrok-free.app/webhook/be",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a8e94c7b-5026-48a0-ba98-3663f0f87217",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3eef55ec08c90e8ddd4411f18519cd3ad85d8e6f7f57fd1fb7779898bc5aab19"
+  },
+  "id": "FhYHdPTMMngPAbjF",
+  "tags": []
+}
